@@ -1,0 +1,13 @@
+
+
+allprojects {
+
+    group = 'com.devsmart'
+    version = '0.0.1-SNAPSHOT'
+    description = 'Decerntrialized Trust Network'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
