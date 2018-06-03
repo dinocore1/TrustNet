@@ -1,5 +1,6 @@
-package com.devsmart.trustnet;
+package com.devsmart.trustnet.objects;
 
+import com.devsmart.trustnet.Hashable;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hasher;
 
@@ -26,6 +27,7 @@ public class Human implements Hashable {
 
     @Override
     public void addToHash(Hasher hasher) {
+        hasher.putString("human", Charsets.UTF_8);
         hasher.putString(firstName, Charsets.UTF_8);
         hasher.putString(lastName, Charsets.UTF_8);
     }

@@ -49,6 +49,6 @@ public class Block {
 
     @Override
     public String toString() {
-        return hash.toString().substring(0, 5);
+        return String.format("%010d: %s", index, hash.toString().substring(0, 5));
     }
 }
