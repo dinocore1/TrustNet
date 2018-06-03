@@ -17,7 +17,7 @@ public class AsymetricKeyScheme {
         return kpg.generateKeyPair();
     }
 
-    
+
 
     public static PublicKey decodePublicKey(String s) {
         return null;
