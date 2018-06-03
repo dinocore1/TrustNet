@@ -2,5 +2,8 @@
 apply plugin: 'java'
 
 dependencies {
-    
+    compile 'com.google.guava:guava:25.1-jre'
+    compile 'org.bouncycastle:bcprov-jdk16:1.46'
+    testCompile 'junit:junit:4.12'
+
 }
