@@ -3,6 +3,7 @@ package com.devsmart.trustnet;
 import com.google.common.base.Charsets;
 
 import java.security.*;
+import java.security.spec.ECGenParameterSpec;
 
 public class AsymetricKeyScheme {
 
@@ -10,7 +11,9 @@ public class AsymetricKeyScheme {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECIES");
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         sr.setSeed(password.getBytes(Charsets.UTF_8));
-        kpg.initialize(256, sr);
+
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec("brainpoolp384t1");
+        kpg.initialize(ecSpec, sr);
         return kpg.generateKeyPair();
     }
 
