@@ -17,7 +17,7 @@ public class Actor implements Hashable {
 
     @Override
     public String toString() {
-        return "Actor: " + BaseEncoding.base64().encode(publicKey.getEncoded());
+        return "actor: " + BaseEncoding.base64().encode(publicKey.getEncoded());
     }
 
     @Override
