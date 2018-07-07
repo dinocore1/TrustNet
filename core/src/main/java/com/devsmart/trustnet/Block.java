@@ -37,25 +37,28 @@ public class Block {
 
     public static int createDifficultyBits(int numBits) {
         numBits = Math.max(8, Math.min(248, numBits));
-        int shift = (numBits-1) / 8;
+        int shift = (numBits-8) / 8;
 
         int remain = (numBits - 8) % 24;
-        int value = ~(1 << remain);
+        int value = (1 << (24-remain))-1;
 
         return shift << 24 | (0x00FFFFFF & value);
     }
 
     public static boolean meetsDifficulty(int difficultyBits, byte[] hash) {
-        int shift = Math.max(((0xFF000000 & difficultyBits) >>> 24), 32-3);
+        int shift = Math.min(((0xFF000000 & difficultyBits) >>> 24), 31-3);
         int target = (0x00FFFFFF & difficultyBits);
 
         for(int i=0;i<shift;i++) {
-            if(hash[i] > 0x00) {
+            if(hash[i] != 0x00) {
                 return false;
             }
         }
 
-        long value = (hash[shift] << 24) | (hash[shift+1] << 16) | (hash[shift+2] << 8) | (hash[shift+3]);
+        long value = (0x00000000FFFFFFFFL & (hash[shift] << 24) )
+                | (0x00000000FFFFFFFFL & (hash[shift+1] << 16) )
+                | (0x00000000FFFFFFFFL & (hash[shift+2] << 8) )
+                | (0x00000000FFFFFFFFL & hash[shift+3] );
         return value < target;
 
     }
