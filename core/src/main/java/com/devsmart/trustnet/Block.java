@@ -4,6 +4,9 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
+import com.google.common.primitives.UnsignedInts;
+
+import java.math.BigInteger;
 
 public class Block {
 
@@ -12,22 +15,58 @@ public class Block {
     public final long index;
     public final HashCode previousHash;
     public final long timestamp;
+    public final int difficultyBits;
+    public final long nunce;
     public final byte[] data;
     public final HashCode hash;
 
-    public Block(long index, HashCode previousHash, long timestamp, byte[] data, HashCode hash) {
+    public Block(long index, HashCode previousHash, long timestamp, int difficultyBits, long nunce, byte[] data, HashCode hash) {
         this.index = index;
         this.previousHash = previousHash;
         this.timestamp = timestamp;
+        this.difficultyBits = difficultyBits;
+        this.nunce = nunce;
         this.data = data;
         this.hash = hash;
     }
 
-    public static HashCode computeHash(long index, HashCode previousHash, long timestamp, byte[] data) {
+    public boolean isValid() {
+        final HashCode expected = computeHash(index, previousHash, timestamp, difficultyBits, nunce, data);
+        return this.hash.equals(expected) && meetsDifficulty(difficultyBits, hash.asBytes());
+    }
+
+    public static int createDifficultyBits(int numBits) {
+        numBits = Math.max(8, Math.min(248, numBits));
+        int shift = (numBits-1) / 8;
+
+        int remain = (numBits - 8) % 24;
+        int value = ~(1 << remain);
+
+        return shift << 24 | (0x00FFFFFF & value);
+    }
+
+    public static boolean meetsDifficulty(int difficultyBits, byte[] hash) {
+        int shift = Math.max(((0xFF000000 & difficultyBits) >>> 24), 32-3);
+        int target = (0x00FFFFFF & difficultyBits);
+
+        for(int i=0;i<shift;i++) {
+            if(hash[i] > 0x00) {
+                return false;
+            }
+        }
+
+        long value = (hash[shift] << 24) | (hash[shift+1] << 16) | (hash[shift+2] << 8) | (hash[shift+3]);
+        return value < target;
+
+    }
+
+    public static HashCode computeHash(long index, HashCode previousHash, long timestamp, int difficultyBits, long nunce, byte[] data) {
         Hasher hasher = HASH_FUNCTION.newHasher();
         hasher.putLong(index);
         hasher.putBytes(previousHash.asBytes());
         hasher.putLong(timestamp);
+        hasher.putInt(difficultyBits);
+        hasher.putLong(nunce);
         hasher.putBytes(data);
         return hasher.hash();
     }
@@ -49,6 +88,7 @@ public class Block {
 
     @Override
     public String toString() {
-        return String.format("%010d: %s", index, hash.toString().substring(0, 5));
+        String hexValue = hash.toString();
+        return String.format("%07d: %s", index, hexValue.substring(hexValue.length()-5));
     }
 }
