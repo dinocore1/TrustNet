@@ -1,6 +1,8 @@
 package com.devsmart.trustnet;
 
-public class Trust implements Comparable<Trust> {
+import com.google.common.hash.Hasher;
+
+public class Trust implements Comparable<Trust>, Hashable {
 
 
     public static Trust TENET = fromInt(1);
@@ -79,4 +81,8 @@ public class Trust implements Comparable<Trust> {
     }
 
 
+    @Override
+    public void addToHash(Hasher hasher) {
+        hasher.putInt(mValue);
+    }
 }
