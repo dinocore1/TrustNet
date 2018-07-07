@@ -4,9 +4,6 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-import com.google.common.primitives.UnsignedInts;
-
-import java.math.BigInteger;
 
 public class Block {
 
@@ -55,10 +52,7 @@ public class Block {
             }
         }
 
-        long value = (0x00000000FFFFFFFFL & (hash[shift] << 24) )
-                | (0x00000000FFFFFFFFL & (hash[shift+1] << 16) )
-                | (0x00000000FFFFFFFFL & (hash[shift+2] << 8) )
-                | (0x00000000FFFFFFFFL & hash[shift+3] );
+        long value = Utils.unsignedIntToLong(hash, shift);
         return value < target;
 
     }
