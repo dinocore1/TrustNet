@@ -8,7 +8,7 @@ public class Trust implements Comparable<Trust>, Hashable {
     public static Trust TENET = fromInt(1);
     public static Trust ONE_TRUST = fromInt(100000000);
 
-    private int mValue;
+    public final int intValue;
 
     /**
      *
@@ -20,39 +20,39 @@ public class Trust implements Comparable<Trust>, Hashable {
     }
 
     private Trust(int value) {
-        mValue = value;
+        intValue = value;
     }
 
     public Trust add(Trust t) {
-        return new Trust(mValue + t.mValue);
+        return new Trust(intValue + t.intValue);
     }
 
     public Trust subtract(Trust t) {
-        return new Trust(mValue - t.mValue);
+        return new Trust(intValue - t.intValue);
     }
 
     public Trust multiply(Trust t) {
-        return new Trust(mValue * t.mValue);
+        return new Trust(intValue * t.intValue);
     }
 
     public Trust multiply(int x) {
-        return new Trust(mValue * x);
+        return new Trust(intValue * x);
     }
 
     public Trust divide(Trust t) {
-        return new Trust(mValue / t.mValue);
+        return new Trust(intValue / t.intValue);
     }
 
     public Trust divide(int x) {
-        return new Trust(mValue / x);
+        return new Trust(intValue / x);
     }
 
     public Trust mod(Trust t) {
-        return new Trust(mValue % t.mValue);
+        return new Trust(intValue % t.intValue);
     }
 
     public Trust mod(int x) {
-        return new Trust(mValue % x);
+        return new Trust(intValue % x);
     }
 
     @Override
@@ -62,27 +62,27 @@ public class Trust implements Comparable<Trust>, Hashable {
         }
 
         Trust o = (Trust) obj;
-        return mValue == o.mValue;
+        return intValue == o.intValue;
     }
 
     @Override
     public int compareTo(Trust o) {
-        return mValue - o.mValue;
+        return intValue - o.intValue;
     }
 
     @Override
     public int hashCode() {
-        return mValue;
+        return intValue;
     }
 
     @Override
     public String toString() {
-        return String.format("%.8fT", mValue / 1e8);
+        return String.format("%.8fT", intValue / 1e8);
     }
 
 
     @Override
     public void addToHash(Hasher hasher) {
-        hasher.putInt(mValue);
+        hasher.putInt(intValue);
     }
 }

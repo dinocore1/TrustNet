@@ -5,6 +5,7 @@ dependencies {
     compile 'com.google.guava:guava:25.1-jre'
     compile 'org.bouncycastle:bcprov-jdk16:1.46'
     compile 'org.mapdb:mapdb:3.0.7'
+    compile 'com.dev-smart:ubjson:0.1.8'
     testCompile 'junit:junit:4.12'
 
 }
