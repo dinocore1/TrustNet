@@ -7,6 +7,7 @@ import com.google.common.hash.Hashing;
 
 public class Block {
 
+    public static final int MIN_DIFFICULTY_BITS = 0x00FFFFFF;
     public static final HashFunction HASH_FUNCTION = Hashing.sha256();
 
     public final long index;
@@ -29,7 +30,9 @@ public class Block {
 
     public boolean isValid() {
         final HashCode expected = computeHash(index, previousHash, timestamp, difficultyBits, nunce, data);
-        return this.hash.equals(expected) && meetsDifficulty(difficultyBits, hash.asBytes());
+        return this.hash.equals(expected)
+                && difficultyBits >= MIN_DIFFICULTY_BITS
+                && meetsDifficulty(difficultyBits, hash.asBytes());
     }
 
     public static int createDifficultyBits(int numBits) {
