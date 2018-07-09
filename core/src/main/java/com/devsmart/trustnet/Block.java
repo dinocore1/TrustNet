@@ -7,7 +7,7 @@ import com.google.common.hash.Hashing;
 
 public class Block {
 
-    public static final int MIN_DIFFICULTY_BITS = 0x00FFFFFF;
+    public static final int MIN_DIFFICULTY_BITS = 0x01FFFFFF;
     public static final HashFunction HASH_FUNCTION = Hashing.sha256();
 
     public final long index;
@@ -26,13 +26,6 @@ public class Block {
         this.nunce = nunce;
         this.data = data;
         this.hash = hash;
-    }
-
-    public boolean isValid() {
-        final HashCode expected = computeHash(index, previousHash, timestamp, difficultyBits, nunce, data);
-        return this.hash.equals(expected)
-                && difficultyBits >= MIN_DIFFICULTY_BITS
-                && meetsDifficulty(difficultyBits, hash.asBytes());
     }
 
     public static int createDifficultyBits(int numBits) {
@@ -55,7 +48,16 @@ public class Block {
             }
         }
 
-        long value = Utils.unsignedIntToLong(hash, shift);
+        int value = 0;
+        value |= hash[shift] & 0xFF;
+        value <<= 8;
+        value |= hash[shift+1] & 0xFF;
+        value <<= 8;
+        value |= hash[shift+2] & 0xFF;
+        //value <<= 8;
+        //value |= hash[shift+3] & 0xFF;
+
+        //long value = Utils.unsignedIntToLong(hash, shift);
         return value < target;
 
     }
@@ -63,7 +65,9 @@ public class Block {
     public static HashCode computeHash(long index, HashCode previousHash, long timestamp, int difficultyBits, long nunce, byte[] data) {
         Hasher hasher = HASH_FUNCTION.newHasher();
         hasher.putLong(index);
-        hasher.putBytes(previousHash.asBytes());
+        if(index != 0) {
+            hasher.putBytes(previousHash.asBytes());
+        }
         hasher.putLong(timestamp);
         hasher.putInt(difficultyBits);
         hasher.putLong(nunce);

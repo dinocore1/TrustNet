@@ -4,7 +4,9 @@ import com.devsmart.trustnet.objects.Human;
 import com.devsmart.ubjson.UBObject;
 import com.devsmart.ubjson.UBValueFactory;
 import com.devsmart.ubjson.UBWriter;
+import com.google.common.base.Charsets;
 import com.google.common.hash.Hasher;
+import com.google.common.io.BaseEncoding;
 
 import java.io.ByteArrayOutputStream;
 import java.security.PrivateKey;
@@ -31,18 +33,34 @@ public class TrustTransaction implements Hashable {
         retval.put("src", UBValueFactory.createString(src.publicKey.getEncoded()));
         retval.put("dst", UBValueFactory.createString(dest.publicKey.getEncoded()));
         retval.put("amt", UBValueFactory.createInt(amount.intValue));
+        retval.put("sig", UBValueFactory.createArrayOrNull(signature));
         return retval;
     }
 
     public byte[] sign(PrivateKey privateKey) throws Exception {
+
+        Signature sig = AsymetricKeyScheme.initSignature(privateKey);
+
+        StringBuilder str = new StringBuilder();
+        str.append("send ");
+        str.append(amount.toString());
+        str.append(" from ");
+        str.append(BaseEncoding.base64().encode(src.publicKey.getEncoded()));
+        str.append(" to ");
+        str.append(BaseEncoding.base64().encode(dest.publicKey.getEncoded()));
+
+        sig.update(str.toString().getBytes(Charsets.UTF_8));
+
+        /*
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         UBWriter writer = new UBWriter(out);
         writer.writeObject(toObj());
         writer.close();
         byte[] msg = out.toByteArray();
 
-        Signature sig = AsymetricKeyScheme.initSignature(privateKey);
+
         sig.update(msg);
+        */
         return sig.sign();
     }
 

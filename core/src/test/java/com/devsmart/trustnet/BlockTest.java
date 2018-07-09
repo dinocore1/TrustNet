@@ -40,6 +40,10 @@ public class BlockTest {
         data[1] = (byte) 0x80;
         assertTrue(Block.meetsDifficulty(0x00FFFFFF, data));
 
+        data = new byte[32];
+
+        assertFalse(Block.meetsDifficulty(0x01FFFFFF, data));
+
     }
 
 

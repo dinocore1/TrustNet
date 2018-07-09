@@ -17,8 +17,9 @@ public class Human extends Actor {
 
     @Override
     public String toString() {
-        String pubKey = BaseEncoding.base64().encode(publicKey.getEncoded());
-        return "human: " + name + " : " + pubKey.substring(0, 6);
+        final int hash = publicKey.hashCode();
+        String id = Integer.toHexString(hash);
+        return "human: " + name + " : " + id;
     }
 
     @Override

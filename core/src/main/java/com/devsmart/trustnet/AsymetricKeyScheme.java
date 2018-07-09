@@ -18,13 +18,13 @@ public class AsymetricKeyScheme {
     }
 
     public static Signature initSignature(PrivateKey key) throws Exception {
-        Signature sig = Signature.getInstance("ECDSA");
+        Signature sig = Signature.getInstance("SHA256withECDSA");
         sig.initSign(key);
         return sig;
     }
 
     public static Signature initVerify(PublicKey key) throws Exception {
-        Signature sig = Signature.getInstance("ECDSA");
+        Signature sig = Signature.getInstance("SHA256withECDSA");
         sig.initVerify(key);
         return sig;
     }
